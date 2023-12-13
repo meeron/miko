@@ -13,6 +13,7 @@ var (
 func main() {
 	app := miko.NewApp()
 	app.Get("/", Index)
+	app.Get("/json", Json)
 
 	addr := fmt.Sprintf(":%d", PORT)
 
@@ -22,4 +23,12 @@ func main() {
 
 func Index(ctx *miko.Context) error {
 	return ctx.String("Hello from Index")
+}
+
+func Json(ctx *miko.Context) error {
+	return ctx.Json(struct {
+		Name string `json:"name"`
+	}{
+		Name: "Test",
+	})
 }
