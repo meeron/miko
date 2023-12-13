@@ -1,6 +1,7 @@
 package miko
 
 import (
+	"errors"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
@@ -22,6 +23,10 @@ func (app *App) Get(pattern string, h Handler) {
 	app.router.GET(pattern, createHttpRouterHandler(h))
 }
 
+func (app *App) Post(pattern string, h Handler) {
+	app.router.POST(pattern, createHttpRouterHandler(h))
+}
+
 func (app *App) Listen(addr string) error {
 	return http.ListenAndServe(addr, app.router)
 }
@@ -35,6 +40,11 @@ func createHttpRouterHandler(h Handler) httprouter.Handle {
 		}
 
 		if err := h(ctx); err != nil {
+			if errors.Is(err, ErrUnsupportedMediaType) {
+				w.WriteHeader(http.StatusUnsupportedMediaType)
+				return
+			}
+
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = fmt.Fprint(w, err)
 		}

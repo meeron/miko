@@ -38,3 +38,16 @@ func (c *Context) StatusJson(data any, statusCode int) error {
 func (c *Context) Json(data any) error {
 	return c.StatusJson(data, http.StatusOK)
 }
+
+func (c *Context) BindJson(v any) error {
+	if c.r.Header.Get("Content-Type") != "application/json" {
+		return ErrUnsupportedMediaType
+	}
+
+	enc := json.NewDecoder(c.r.Body)
+	return enc.Decode(v)
+}
+
+func (c *Context) FormValue(name string) string {
+	return c.r.FormValue(name)
+}
