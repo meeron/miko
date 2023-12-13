@@ -3,12 +3,22 @@ package miko
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/julienschmidt/httprouter"
 	"net/http"
 )
 
 type Context struct {
 	r *http.Request
 	w http.ResponseWriter
+	p httprouter.Params
+}
+
+func (c *Context) RouteParam(name string) string {
+	return c.p.ByName(name)
+}
+
+func (c *Context) QueryString(name string) string {
+	return c.r.URL.Query().Get(name)
 }
 
 func (c *Context) String(text string) error {

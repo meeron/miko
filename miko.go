@@ -27,10 +27,11 @@ func (app *App) Listen(addr string) error {
 }
 
 func createHttpRouterHandler(h Handler) httprouter.Handle {
-	return func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		ctx := &Context{
 			w: w,
 			r: r,
+			p: p,
 		}
 
 		if err := h(ctx); err != nil {

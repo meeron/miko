@@ -13,7 +13,7 @@ var (
 func main() {
 	app := miko.NewApp()
 	app.Get("/", Index)
-	app.Get("/json", Json)
+	app.Get("/json/:name", Json)
 
 	addr := fmt.Sprintf(":%d", PORT)
 
@@ -28,7 +28,9 @@ func Index(ctx *miko.Context) error {
 func Json(ctx *miko.Context) error {
 	return ctx.Json(struct {
 		Name string `json:"name"`
+		Q    string `json:"q"`
 	}{
-		Name: "Test",
+		Name: ctx.RouteParam("name"),
+		Q:    ctx.QueryString("q"),
 	})
 }
